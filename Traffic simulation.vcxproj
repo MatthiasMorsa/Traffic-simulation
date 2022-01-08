@@ -167,7 +167,15 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico" />
+    <Image Include="textures\FactoryD.png" />
+    <Image Include="textures\FactoryL.png" />
+    <Image Include="textures\FactoryR.png" />
+    <Image Include="textures\FactoryU.png" />
     <Image Include="textures\grass.png" />
+    <Image Include="textures\houseD.png" />
+    <Image Include="textures\houseL.png" />
+    <Image Include="textures\houseR.png" />
+    <Image Include="textures\houseU.png" />
     <Image Include="textures\RoadCross.png" />
     <Image Include="textures\RoadEndD.png" />
     <Image Include="textures\RoadEndL.png" />

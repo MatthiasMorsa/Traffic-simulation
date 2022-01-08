@@ -135,5 +135,29 @@
     <Image Include="textures\RoadLDR.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="textures\FactoryD.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\FactoryU.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\FactoryR.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\FactoryL.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\houseD.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\houseL.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\houseR.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\houseU.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

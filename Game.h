@@ -21,7 +21,10 @@ const int g_gridsize{ (int)sqrt(g_GridCells) };
 Point2f g_cellPosition[g_GridCells]{ };
 Point2f g_startPos{ 50,((int)sqrt(g_GridCells) * g_GridSizeY) + 5};
 int g_CellState[g_GridCells]{};
-Texture g_pGrass,g_pRoadPoint,g_pRoadUtoL, g_pRoadUtoR, g_pRoadDtoL, g_pRoadDtoR, g_pRoadHorizontal, g_pRoadVertical,g_pRoadEndD, g_pRoadEndL, g_pRoadEndU, g_pRoadEndR, g_pRoadLDR, g_pRoadLUD, g_pRoadLUR, g_pRoadURD, g_pRoadCross;
+Texture g_pGrass,g_pRoadPoint,g_pRoadUtoL, g_pRoadUtoR, g_pRoadDtoL, g_pRoadDtoR,
+		g_pRoadHorizontal, g_pRoadVertical,g_pRoadEndD, g_pRoadEndL, g_pRoadEndU,
+		g_pRoadEndR, g_pRoadLDR, g_pRoadLUD, g_pRoadLUR, g_pRoadURD, g_pRoadCross,
+		g_pHouseL, g_pHouseR, g_pHouseU, g_pHouseD,g_pFactoryU, g_pFactoryD, g_pFactoryL, g_pFactoryR;
 // Declare your own functions here
 void GetTextures();
 void releaseTextures();
@@ -29,6 +32,9 @@ void GridPositions();
 void DrawGrid();
 void Tilecliked();
 Texture TileSelector(int& tileIndex);
+Texture RoadSelector(int& tileIndex);
+Texture HouseSelector(int& tileIndex);
+Texture FactorySelector(int& tileIndex);
 int CheckConnections(int& tileIndex);
 #pragma endregion ownDeclarations
 

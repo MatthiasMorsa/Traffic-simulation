@@ -34,6 +34,14 @@ void GetTextures() {
 	assert(TextureFromFile("textures/RoadLUR.png", g_pRoadLUR));
 	assert(TextureFromFile("textures/RoadURD.png", g_pRoadURD));
 	assert(TextureFromFile("textures/RoadCross.png", g_pRoadCross));
+	assert(TextureFromFile("textures/houseL.png", g_pHouseL));
+	assert(TextureFromFile("textures/houseR.png", g_pHouseR));
+	assert(TextureFromFile("textures/houseU.png", g_pHouseU));
+	assert(TextureFromFile("textures/houseD.png", g_pHouseD));
+	assert(TextureFromFile("textures/FactoryU.png", g_pFactoryU));
+	assert(TextureFromFile("textures/FactoryD.png", g_pFactoryD));
+	assert(TextureFromFile("textures/FactoryL.png", g_pFactoryL));
+	assert(TextureFromFile("textures/FactoryR.png", g_pFactoryR));
 }
 void Draw()
 {
@@ -85,6 +93,14 @@ void releaseTextures() {
 	DeleteTexture(g_pRoadLUR);
 	DeleteTexture(g_pRoadURD);
 	DeleteTexture(g_pRoadCross);
+	DeleteTexture(g_pHouseL);
+	DeleteTexture(g_pHouseR);
+	DeleteTexture(g_pHouseU);
+	DeleteTexture(g_pHouseD);
+	DeleteTexture(g_pFactoryU);
+	DeleteTexture(g_pFactoryD);
+	DeleteTexture(g_pFactoryL);
+	DeleteTexture(g_pFactoryR);
 }
 #pragma endregion gameFunctions
 
@@ -141,6 +157,22 @@ void OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 		}
 	}
 }
+void Tilecliked() {
+	int index{};
+	for (int counter{ 0 }; counter < g_GridCells; counter++) {
+		if ((g_mousePos.x < (g_cellPosition[counter].x + g_GridSizeX)) && (g_mousePos.x > g_cellPosition[counter].x)) {
+			if ((g_mousePos.y < (g_cellPosition[counter].y + g_GridSizeY)) && (g_mousePos.y > g_cellPosition[counter].y)) {
+				index = counter;
+				std::cout << index << "\n";
+				if (g_CellState[index] == 0)g_CellState[index] += 1;//road tile
+				else if (g_CellState[index] == 1)g_CellState[index] += 1;//house tile
+				else if (g_CellState[index] == 2)g_CellState[index] += 1;//factory tile
+				else g_CellState[index] = 0;//grass tile
+			}
+		}
+	}
+
+}
 #pragma endregion inputHandling
 
 #pragma region ownDefinitions
@@ -186,26 +218,34 @@ void DrawGrid() {
 	}
 	irow = 0;
 }
-void Tilecliked() {
-	int index{};
-	for (int counter{ 0 }; counter < g_GridCells; counter++) {
-		if ((g_mousePos.x < (g_cellPosition[counter].x + g_GridSizeX)) && (g_mousePos.x > g_cellPosition[counter].x)) {
-			if ((g_mousePos.y < (g_cellPosition[counter].y + g_GridSizeY)) && (g_mousePos.y > g_cellPosition[counter].y)) {
-				index = counter;
-				std::cout << index << "\n";
-				if(g_CellState[index] == 0)g_CellState[index] = 1;//road tile
-				else g_CellState[index] = 0;//non road tile
-			}
-		}
+Texture TileSelector(int& tileIndex) {
+
+	switch (g_CellState[tileIndex])
+	{
+	case 0://grass type
+		return g_pGrass;
+		break;
+	case 1://road type
+		return RoadSelector(tileIndex);
+		break;
+	case 2://house type
+		return HouseSelector(tileIndex);;
+		break;
+	case 3://factory type
+		return FactorySelector(tileIndex);;
+		break;
+	default:
+		break;
 	}
 
+
+	return g_pGrass;
 }
-Texture TileSelector(int& tileIndex) {
+Texture RoadSelector(int& tileIndex) {
 	//trough the bits we know what other tiles are connected to the tile
-	int selection{0};//up  left
+	int selection{ 0 };//up  left
 	//                 0 0 0 0<right
 	//               down^
-	if (g_CellState[tileIndex] == 0)return g_pGrass;
 	selection = CheckConnections(tileIndex);
 	switch (selection)
 	{
@@ -261,28 +301,50 @@ Texture TileSelector(int& tileIndex) {
 		return g_pGrass;
 		break;
 	}
-	return g_pGrass;
 }
-
+Texture HouseSelector(int& tileIndex) {
+	//trough the bits we know what other tiles are connected to the tile
+	int selection{ 0 };  //up  left
+		//                 0 0 0 0<right
+		//               down^
+	selection = CheckConnections(tileIndex);
+	//return texture
+	if (selection >= 2 && selection < 4)return g_pHouseL;
+	else if (selection >= 4 && selection < 8)return g_pHouseD;
+	else if (selection >= 8)return g_pHouseU;
+	return g_pHouseR;
+}
+Texture FactorySelector(int& tileIndex) {
+	//trough the bits we know what other tiles are connected to the tile
+	int selection{ 0 };  //up  left
+		//                 0 0 0 0<right
+		//               down^
+	selection = CheckConnections(tileIndex);
+	//return texture
+	if (selection >= 2 && selection < 4)return g_pFactoryL;
+	else if (selection >= 4 && selection < 8)return g_pFactoryD;
+	else if (selection >= 8)return g_pFactoryU;
+	return g_pFactoryR;
+}
 int CheckConnections(int& tileIndex) {
 	int upIndex{ MAXINT }, downIndex{ MAXINT }, leftIndex{ MAXINT }, rightIndex{ MAXINT }, selector{0};
 	//up check
 	if (tileIndex - 10 >= 0) {
-		if (g_CellState[tileIndex - 10] > 0)upIndex =  1;
+		if (g_CellState[tileIndex - 10] == 1)upIndex =  1;
 	}
 	//down check
 	if (tileIndex + 10 <= g_GridCells-1) {
-		if (g_CellState[tileIndex + 10] > 0)downIndex =  1;
+		if (g_CellState[tileIndex + 10] == 1)downIndex =  1;
 	}
 	//if at most right col
 	if (tileIndex % 10 != 9){
 		//Right check
-		if (g_CellState[tileIndex + 1] > 0)rightIndex = 1;
+		if (g_CellState[tileIndex + 1] == 1)rightIndex = 1;
 	}
 	//check if at most left col
 	if (tileIndex % 10 != 0){
 		//Left check
-		if (g_CellState[tileIndex - 1] > 0)leftIndex = 1;
+		if (g_CellState[tileIndex - 1] == 1)leftIndex = 1;
 	}
 	            //up  left
 //                 0 0 0 0<right
