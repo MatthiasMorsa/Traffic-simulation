@@ -14,6 +14,6 @@ As of 8/01/2022 i am still coding the simulator
 - create traffic lights ✖
 
 
-### how does it work
+### 💡how does it work💡
 **first you create a road network** <br />
 ![image of road network](https://github.com/MatthiasMorsa/Traffic-simulation/blob/master/readmePNG/RoadNetwork.PNG?raw=true)
