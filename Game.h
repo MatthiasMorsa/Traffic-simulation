@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 using namespace utils;
 #pragma region gameInformation
 // Set your name and group in the title here
@@ -18,6 +19,7 @@ const float g_WorldRow{ 800 / g_GridSizeX };
 const float g_WorldCol{ 800 / g_GridSizeY };
 const int  g_GridCells{ 100 };
 const int g_gridsize{ (int)sqrt(g_GridCells) };
+std::vector<int> g_path;
 Point2f g_cellPosition[g_GridCells]{ };
 Point2f g_startPos{ 50,((int)sqrt(g_GridCells) * g_GridSizeY) + 5};
 int g_CellState[g_GridCells]{};
@@ -36,6 +38,8 @@ Texture RoadSelector(int& tileIndex);
 Texture HouseSelector(int& tileIndex);
 Texture FactorySelector(int& tileIndex);
 int CheckConnections(int& tileIndex);
+std::vector<int> GetNeighbours(int& tileIndex);
+std::vector<int> FindPath(int StartIndex, int EndIndex);
 #pragma endregion ownDeclarations
 
 #pragma region gameFunctions											

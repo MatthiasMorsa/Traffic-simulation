@@ -3,6 +3,8 @@
 #include "vechicle.h"
 #include <iostream>
 #include <assert.h>
+#include <queue>
+#include <map>
 //Basic game functions
 #pragma region gameFunctions											
 void Start()
@@ -217,6 +219,12 @@ void DrawGrid() {
 		}
 	}
 	irow = 0;
+	g_path = FindPath(0, 99);
+	for (int index : g_path)
+	{
+		SetColor(1, 1, 0);
+		FillRect(g_cellPosition[index].x, g_cellPosition[index].y, g_GridSizeX, g_GridSizeY);
+	}
 }
 Texture TileSelector(int& tileIndex) {
 
@@ -326,6 +334,7 @@ Texture FactorySelector(int& tileIndex) {
 	else if (selection >= 8)return g_pFactoryU;
 	return g_pFactoryR;
 }
+
 int CheckConnections(int& tileIndex) {
 	int upIndex{ MAXINT }, downIndex{ MAXINT }, leftIndex{ MAXINT }, rightIndex{ MAXINT }, selector{0};
 	//up check
@@ -358,5 +367,70 @@ int CheckConnections(int& tileIndex) {
 		int a{};
 	}
 	return selector;
+}
+
+std::vector<int> GetNeighbours(int& tileIndex){
+	//up check
+	std::vector<int> neighbourIndexes{};
+	if (tileIndex - 10 >= 0) {
+		if (g_CellState[tileIndex - 10] == 1)neighbourIndexes.push_back(tileIndex-10);
+	}
+	//down check
+	if (tileIndex + 10 <= g_GridCells - 1) {
+		if (g_CellState[tileIndex + 10] == 1)neighbourIndexes.push_back(tileIndex + 10);
+	}
+	//if at most right col
+	if (tileIndex % 10 != 9) {
+		//Right check
+		if (g_CellState[tileIndex + 1] == 1)neighbourIndexes.push_back(tileIndex + 1);
+	}
+	//check if at most left col
+	if (tileIndex % 10 != 0) {
+		//Left check
+		if (g_CellState[tileIndex - 1] == 1)neighbourIndexes.push_back(tileIndex - 1);
+	}
+	return neighbourIndexes;
+}
+
+std::vector<int>  FindPath(int StartIndex, int EndIndex){
+
+	std::queue<int> openlist; //Nodes that still need a check
+	std::map<int, int> closedList; // already checked nodes
+
+	openlist.push(StartIndex);
+
+	while (!openlist.empty())
+	{
+		int currentIndex = openlist.front();    //taking a node from the openlist
+		openlist.pop(); //removing that node
+
+		if (currentIndex == EndIndex)//stop searching we found end
+		{
+			break;
+		}
+		for (int index : GetNeighbours(currentIndex))
+		{
+			if (closedList.find(index) == closedList.end())
+			{
+				//we did not find this node in de closedlist
+				openlist.push(index);
+				closedList[index] = currentIndex;
+			}
+		}
+	}
+
+	//Start tracking the path
+	std::vector<int> path;
+	int currentIndex = EndIndex;
+
+	while (currentIndex != StartIndex)
+	{
+		path.push_back(currentIndex);
+		currentIndex = closedList[currentIndex];
+	}
+	path.push_back(StartIndex);
+	std::reverse(path.begin(), path.end());//reversing path so the beginning is at the green dot
+
+	return path;
 }
 #pragma endregion ownDefinitions
