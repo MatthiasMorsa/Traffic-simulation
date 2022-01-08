@@ -12,3 +12,4 @@ As of 8/01/2022 i am still coding the simulator
 
 #### how does it work
 first you create a road network
+![alt text](https://github.com/MatthiasMorsaTraffic-simulation/readmePNG/RoadNetwork.PNG?raw=true)
