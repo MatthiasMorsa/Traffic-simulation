@@ -9,11 +9,16 @@ void Start()
 {
 	// initialize game resources here
 	GridPositions();
+	//set all tiles grass
 	for (int state : g_CellState) {
 		state = 0;
 	}
+	//load all textures needed
+	GetTextures();
+}
+void GetTextures() {
 	assert(TextureFromFile("textures/grass.png", g_pGrass));
-	assert( TextureFromFile("textures/RoadHorizontale.png", g_pRoadHorizontal));
+	assert(TextureFromFile("textures/RoadHorizontale.png", g_pRoadHorizontal));
 	assert(TextureFromFile("textures/RoadVerticale.png", g_pRoadVertical));
 	assert(TextureFromFile("textures/RoadEndD.png", g_pRoadEndD));
 	assert(TextureFromFile("textures/RoadEndL.png", g_pRoadEndL));
@@ -30,12 +35,12 @@ void Start()
 	assert(TextureFromFile("textures/RoadURD.png", g_pRoadURD));
 	assert(TextureFromFile("textures/RoadCross.png", g_pRoadCross));
 }
-
 void Draw()
 {
 	ClearBackground();
-	DrawGrid();
 	// Put your own draw statements here
+	DrawGrid();
+	
 
 }
 
@@ -58,6 +63,28 @@ void Update(float elapsedSec)
 void End()
 {
 	// free game resources here
+	//deleting all textures
+	releaseTextures();
+
+}
+void releaseTextures() {
+	DeleteTexture(g_pGrass);
+	DeleteTexture(g_pRoadHorizontal);
+	DeleteTexture(g_pRoadVertical);
+	DeleteTexture(g_pRoadEndD);
+	DeleteTexture(g_pRoadEndL);
+	DeleteTexture(g_pRoadEndR);
+	DeleteTexture(g_pRoadEndU);
+	DeleteTexture(g_pRoadDtoL);
+	DeleteTexture(g_pRoadDtoR);
+	DeleteTexture(g_pRoadUtoL);
+	DeleteTexture(g_pRoadUtoR);
+	DeleteTexture(g_pRoadPoint);
+	DeleteTexture(g_pRoadLDR);
+	DeleteTexture(g_pRoadLUD);
+	DeleteTexture(g_pRoadLUR);
+	DeleteTexture(g_pRoadURD);
+	DeleteTexture(g_pRoadCross);
 }
 #pragma endregion gameFunctions
 
@@ -100,23 +127,18 @@ void OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 {
 	//std::cout << "  [" << e.x << ", " << e.y << "]\n";
 	Point2f mousePos{ float(e.x), float(g_WindowHeight - e.y) };
+	//save current mouse position
 	g_mousePos.x = mousePos.x;
 	g_mousePos.y = mousePos.y;
 	switch (e.button)
 	{
-	case SDL_BUTTON_LEFT:
-	{
+		case SDL_BUTTON_LEFT:
+		{
 		Tilecliked();
 		//std::cout << "Left mouse button released\n";
 		//Point2f mousePos{ float( e.x ), float( g_WindowHeight - e.y ) };
 		break;
-	}
-	case SDL_BUTTON_RIGHT:
-		//std::cout << "Right mouse button released\n";
-		break;
-	case SDL_BUTTON_MIDDLE:
-		//std::cout << "Middle mouse button released\n";
-		break;
+		}
 	}
 }
 #pragma endregion inputHandling

@@ -23,6 +23,8 @@ Point2f g_startPos{ 50,((int)sqrt(g_GridCells) * g_GridSizeY) + 5};
 int g_CellState[g_GridCells]{};
 Texture g_pGrass,g_pRoadPoint,g_pRoadUtoL, g_pRoadUtoR, g_pRoadDtoL, g_pRoadDtoR, g_pRoadHorizontal, g_pRoadVertical,g_pRoadEndD, g_pRoadEndL, g_pRoadEndU, g_pRoadEndR, g_pRoadLDR, g_pRoadLUD, g_pRoadLUR, g_pRoadURD, g_pRoadCross;
 // Declare your own functions here
+void GetTextures();
+void releaseTextures();
 void GridPositions();
 void DrawGrid();
 void Tilecliked();
