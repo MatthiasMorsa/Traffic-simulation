@@ -9,3 +9,6 @@ As of 8/01/2022 i am still coding the simulator
 - create car(texture and functionalety) ✖
 - create home/factory ✖
 - create traffic lights ✖
+
+#### how does it work
+first you create a road network
