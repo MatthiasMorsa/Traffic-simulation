@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "VechicleManager.h"
 using namespace utils;
 #pragma region gameInformation
 // Set your name and group in the title here
@@ -13,6 +14,7 @@ float g_WindowHeight{ 700 };
 
 
 #pragma region ownDeclarations
+VechicleManager* g_pVechicleManager;
 Point2f g_mousePos{};
 const float g_GridSizeX = 50 , g_GridSizeY = 50;
 const float g_WorldRow{ 800 / g_GridSizeX };
@@ -20,13 +22,14 @@ const float g_WorldCol{ 800 / g_GridSizeY };
 const int  g_GridCells{ 100 };
 const int g_gridsize{ (int)sqrt(g_GridCells) };
 std::vector<int> g_path;
-Point2f g_cellPosition[g_GridCells]{ };
+std::vector<Point2f> g_cellPosition{ };
 Point2f g_startPos{ 50,((int)sqrt(g_GridCells) * g_GridSizeY) + 5};
 int g_CellState[g_GridCells]{};
 Texture g_pGrass,g_pRoadPoint,g_pRoadUtoL, g_pRoadUtoR, g_pRoadDtoL, g_pRoadDtoR,
 		g_pRoadHorizontal, g_pRoadVertical,g_pRoadEndD, g_pRoadEndL, g_pRoadEndU,
 		g_pRoadEndR, g_pRoadLDR, g_pRoadLUD, g_pRoadLUR, g_pRoadURD, g_pRoadCross,
-		g_pHouseL, g_pHouseR, g_pHouseU, g_pHouseD,g_pFactoryU, g_pFactoryD, g_pFactoryL, g_pFactoryR;
+		g_pHouseL, g_pHouseR, g_pHouseU, g_pHouseD,g_pFactoryU, g_pFactoryD, g_pFactoryL, g_pFactoryR,
+		g_pCarTexture;
 // Declare your own functions here
 void GetTextures();
 void releaseTextures();

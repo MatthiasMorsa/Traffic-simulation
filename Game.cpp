@@ -17,6 +17,10 @@ void Start()
 	}
 	//load all textures needed
 	GetTextures();
+	//create vechicleManager
+	g_pVechicleManager = new VechicleManager(g_pCarTexture,g_cellPosition);
+	//Point2f pos{ g_cellPosition[0] };
+	//g_pVechicleManager->AddVehicle(pos, FindPath(0,99));
 }
 void GetTextures() {
 	assert(TextureFromFile("textures/grass.png", g_pGrass));
@@ -44,18 +48,20 @@ void GetTextures() {
 	assert(TextureFromFile("textures/FactoryD.png", g_pFactoryD));
 	assert(TextureFromFile("textures/FactoryL.png", g_pFactoryL));
 	assert(TextureFromFile("textures/FactoryR.png", g_pFactoryR));
+	assert(TextureFromFile("textures/CarTexture.png", g_pCarTexture));
 }
 void Draw()
 {
 	ClearBackground();
 	// Put your own draw statements here
 	DrawGrid();
-	
-
+	g_pVechicleManager->Draw();
 }
 
 void Update(float elapsedSec)
 {
+
+	g_pVechicleManager->Update(elapsedSec);
 	// process input, do physics 
 
 	// e.g. Check keyboard state
@@ -75,7 +81,7 @@ void End()
 	// free game resources here
 	//deleting all textures
 	releaseTextures();
-
+	delete g_pVechicleManager;
 }
 void releaseTextures() {
 	DeleteTexture(g_pGrass);
@@ -103,6 +109,7 @@ void releaseTextures() {
 	DeleteTexture(g_pFactoryD);
 	DeleteTexture(g_pFactoryL);
 	DeleteTexture(g_pFactoryR);
+	DeleteTexture(g_pCarTexture);
 }
 #pragma endregion gameFunctions
 
@@ -115,19 +122,22 @@ void OnKeyDownEvent(SDL_Keycode key)
 
 void OnKeyUpEvent(SDL_Keycode key)
 {
-	//switch (key)
-	//{
-	//case SDLK_LEFT:
-	//	//std::cout << "Left arrow key released\n";
-	//	break;
-	//case SDLK_RIGHT:
-	//	//std::cout << "Right arrow key released\n";
-	//	break;
-	//case SDLK_1:
-	//case SDLK_KP_1:
-	//	//std::cout << "Key 1 released\n";
-	//	break;
-	//}
+	Point2f pos{ g_cellPosition[0] };
+	switch (key)
+	{
+	case SDLK_LEFT:
+		//std::cout << "Left arrow key released\n";
+		
+		g_pVechicleManager->AddVehicle(pos, FindPath(0, 99));
+		break;
+	case SDLK_RIGHT:
+		//std::cout << "Right arrow key released\n";
+		break;
+	case SDLK_1:
+	case SDLK_KP_1:
+		//std::cout << "Key 1 released\n";
+		break;
+	}
 }
 
 void OnMouseMotionEvent(const SDL_MouseMotionEvent& e)
@@ -186,17 +196,20 @@ void GridPositions() {
 	Point2f pos{};
 	pos.x = g_startPos.x;
 	pos.y = g_startPos.y;
+	Point2f cellPosition[g_GridCells]{};
 	for (int irow{ 0 }; irow < g_gridsize; irow++) {
 		for (int icol{ 0 }; icol < g_gridsize; icol++) {//put positions from cells 
-			g_cellPosition[irow * g_gridsize + icol].x = pos.x;
-			g_cellPosition[irow * g_gridsize + icol].y = pos.y;
+			cellPosition[irow * g_gridsize + icol].x = pos.x;
+			cellPosition[irow * g_gridsize + icol].y = pos.y;
 			pos.x += g_GridSizeX;
 		}
 
 		pos.y -= g_GridSizeY;
 		pos.x = g_startPos.x;
 	}
-
+	for (Point2f pos : cellPosition) {
+		g_cellPosition.push_back(pos);
+	}
 }
 void DrawGrid() {
 	int irow{ 0 };
@@ -219,10 +232,11 @@ void DrawGrid() {
 		}
 	}
 	irow = 0;
+	//pathfinding test
 	g_path = FindPath(0, 99);
 	for (int index : g_path)
 	{
-		SetColor(1, 1, 0);
+		SetColor(1, 1, 0,0.5f);
 		FillRect(g_cellPosition[index].x, g_cellPosition[index].y, g_GridSizeX, g_GridSizeY);
 	}
 }

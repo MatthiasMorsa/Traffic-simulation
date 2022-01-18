@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
+    <ClInclude Include="VechicleManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="pch.h" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="VechicleManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp" />
@@ -167,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico" />
+    <Image Include="textures\CarTexture.png" />
     <Image Include="textures\FactoryD.png" />
     <Image Include="textures\FactoryL.png" />
     <Image Include="textures\FactoryR.png" />
