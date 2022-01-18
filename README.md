@@ -3,7 +3,7 @@ this is a simple traffic simulation where you can build your own city design and
 <br />
 **⚠still in development⚠**
 <br />
-As of 8/01/2022 i am still coding the simulator
+As of 8/01/2022 i am still coding the simulator, the following list gives you an idea of what i have done so far.
 
 
  ## **✓  done & to do  ✓**
