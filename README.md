@@ -1,5 +1,5 @@
 # 🚦 Traffic-simulation 🚦
-this is a simple traffic simulation where you can build your own city desing and see where traffic will become an issue. 
+this is a simple traffic simulation where you can build your own city design and see where traffic will become an issue. 
 <br />
 **⚠still in development⚠**
 <br />
