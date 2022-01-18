@@ -9,7 +9,8 @@ As of 8/01/2022 i am still coding the simulator
  ## **✓  done & to do  ✓**
 - create road textures ✓
 - create world grid ✓
-- create car(texture and functionalety) ✖
+- create car texture ✓
+- create car(functionalety) ✖
 - create home/factory textures(also placeable) ✓
 - create traffic lights ✖
 
