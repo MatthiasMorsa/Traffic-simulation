@@ -59,9 +59,7 @@ void vechicle::Draw() {
 
 	utils::DrawTexture(m_pTexture, DstRect, m_SrcRect);//draw on vechicle pos
 	glPopMatrix();//return to world pos
-	utils::DrawLine(Point2f{ 0,0 }, m_Position,5);
-	utils::SetColor(1, 0, 0);
-	utils::DrawLine(m_Position, m_direction, 2);
+
 }
 void vechicle::SetDirection(Point2f& direction) {
 	m_direction = direction;

@@ -18,7 +18,7 @@ void Start()
 	//load all textures needed
 	GetTextures();
 	//create vechicleManager
-	g_pVechicleManager = new VechicleManager(g_pCarTexture,g_cellPosition);
+	g_pVechicleManager = new VechicleManager(g_pCarTexture,g_cellPosition, g_GridCells);
 	//Point2f pos{ g_cellPosition[0] };
 	//g_pVechicleManager->AddVehicle(pos, FindPath(0,99));
 }
@@ -122,7 +122,7 @@ void OnKeyDownEvent(SDL_Keycode key)
 
 void OnKeyUpEvent(SDL_Keycode key)
 {
-	Point2f pos{ g_cellPosition[0] };
+	Point2f pos{ g_cellPosition[0].x,g_cellPosition[0].y+100 };
 	switch (key)
 	{
 	case SDLK_LEFT:
@@ -377,9 +377,7 @@ int CheckConnections(int& tileIndex) {
 	if (leftIndex != MAXINT)selector += 2;
 	if (downIndex != MAXINT)selector += 4;
 	if (upIndex != MAXINT)selector += 8;
-	if (tileIndex == 2) {
-		int a{};
-	}
+
 	return selector;
 }
 
