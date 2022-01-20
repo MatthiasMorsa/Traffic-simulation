@@ -10,7 +10,8 @@ As of 8/01/2022 i am still coding the simulator, the following list gives you an
 - create road textures ✓
 - create world grid ✓
 - create car texture ✓
-- create car(functionalety) ✖
+- create car(functionalety) ✓
+- create traffic rules(priorety for righthand cars,...)✖
 - create home/factory textures(also placeable) ✓
 - create traffic lights ✖
 
