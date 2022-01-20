@@ -21,3 +21,5 @@ As of 8/01/2022 i am still coding the simulator, the following list gives you an
 ![image of road network](https://github.com/MatthiasMorsa/Traffic-simulation/blob/master/readmePNG/RoadNetwork.PNG?raw=true)<br />
 **then you add houses/factories** <br />
 ![image of road network](https://github.com/MatthiasMorsa/Traffic-simulation/blob/master/readmePNG/HousesAndFactories.PNG?raw=true)
+**Whenever you want press space to start simulating** <br />
+⚠if there is a house/factory not connected to a road it will freeze(il fix this after i create the traffic rules)
