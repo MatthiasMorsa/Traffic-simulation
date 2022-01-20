@@ -99,5 +99,8 @@ void vechicle::SetGoalPosition(Point2f goalPos) {
 Point2f vechicle::GetGoalPosition() {
 	return m_goalPosistion;
 }
+void vechicle::SetTileIndex(int tileIndex) {
+	m_tileIndex = tileIndex;
+}
 
 

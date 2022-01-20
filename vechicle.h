@@ -26,6 +26,7 @@ public:
 	void SetGoalTileIndex(int& tileIndex);
 	void SetSpeed(float& speed);
 	int GetTileIndex();
+	void SetTileIndex(int tileIndex);
 	Point2f GetPosition();
 	void SetGoalPosition(Point2f goalPos);
 	Point2f GetGoalPosition();

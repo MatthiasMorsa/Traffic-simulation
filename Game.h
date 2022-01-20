@@ -21,6 +21,10 @@ const float g_WorldRow{ 800 / g_GridSizeX };
 const float g_WorldCol{ 800 / g_GridSizeY };
 const int  g_GridCells{ 100 };
 const int g_gridsize{ (int)sqrt(g_GridCells) };
+int g_Houses[g_GridCells]{};
+int g_AmountOfHouses{ 0 };
+int g_Factories[g_GridCells]{};
+int g_AmountOfFactories{ 0 };
 std::vector<int> g_path;
 std::vector<Point2f> g_cellPosition{ };
 Point2f g_startPos{ 50,((int)sqrt(g_GridCells) * g_GridSizeY) + 5};
@@ -30,12 +34,16 @@ Texture g_pGrass,g_pRoadPoint,g_pRoadUtoL, g_pRoadUtoR, g_pRoadDtoL, g_pRoadDtoR
 		g_pRoadEndR, g_pRoadLDR, g_pRoadLUD, g_pRoadLUR, g_pRoadURD, g_pRoadCross,
 		g_pHouseL, g_pHouseR, g_pHouseU, g_pHouseD,g_pFactoryU, g_pFactoryD, g_pFactoryL, g_pFactoryR,
 		g_pCarTexture;
+bool g_Simulating{ false };
+bool g_NotSpawned{ true };
+int g_AmountOfCars{ 5 };
 // Declare your own functions here
 void GetTextures();
 void releaseTextures();
 void GridPositions();
 void DrawGrid();
 void Tilecliked();
+void TileRightcliked();
 Texture TileSelector(int& tileIndex);
 Texture RoadSelector(int& tileIndex);
 Texture HouseSelector(int& tileIndex);
@@ -43,6 +51,8 @@ Texture FactorySelector(int& tileIndex);
 int CheckConnections(int& tileIndex);
 std::vector<int> GetNeighbours(int& tileIndex);
 std::vector<int> FindPath(int StartIndex, int EndIndex);
+Point2f FindSpawnDirection(int& houseIndex);
+void SpawnVechicles();
 #pragma endregion ownDeclarations
 
 #pragma region gameFunctions											

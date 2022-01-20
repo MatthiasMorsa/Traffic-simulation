@@ -7,6 +7,10 @@ VechicleManager::VechicleManager(utils::Texture& texture,std::vector<Point2f> gr
 	m_gridSize{gridsize}
 {
 	m_gridPositions = gridPositions;
+	for (int i{ 0 }; i < gridsize; i++) {
+		m_vechicleInCell.push_back(std::vector<vechicle*>{});
+	}
+
 }
 VechicleManager::~VechicleManager() {
 
@@ -27,42 +31,58 @@ void VechicleManager::DeleteAllVechicle()
 void VechicleManager::Update(float elapsedSec) {
 	//update all vechicles
 	int index{ -1 };
-	for (vechicle* vechicle : m_pVechicles) {
+	for (vechicle* CurrentVechicle : m_pVechicles) {
 		index++;
 		bool deleteVechicle{ false };
-		Point2f position{ vechicle->GetPosition() };
-		Point2f goalPosition{ vechicle->GetGoalPosition() };
-		m_goalPos = vechicle->GetGoalPosition();
-
-		vechicle->Update(elapsedSec);
+		Point2f position{ CurrentVechicle->GetPosition() };
+		Point2f goalPosition{ CurrentVechicle->GetGoalPosition() };
+		m_goalPos = CurrentVechicle->GetGoalPosition();
+		int lastTile{ CurrentVechicle->GetTileIndex() };
+		CurrentVechicle->Update(elapsedSec);
 		//check if near goal
 		if (distance(position, goalPosition) < 1) {
 			//inc counter path
-			vechicle->SetCounterPath(vechicle->GetCounterPath()+1);
+			CurrentVechicle->SetCounterPath(CurrentVechicle->GetCounterPath()+1);
 			//inc goaltile trough path
 			if (index < (int)m_paths.size()) {
-				if (vechicle->GetCounterPath() <= int(m_paths[index].size() - 1)) {
-					int nextTileIndex{ m_paths[index][vechicle->GetCounterPath()] };
-					int currentTile{ vechicle->GetGoalTileIndex() };
-					vechicle->SetGoalTileIndex(nextTileIndex);
+				if (CurrentVechicle->GetCounterPath() <= int(m_paths[index].size() - 1)) {
+					int nextTileIndex{ m_paths[index][CurrentVechicle->GetCounterPath()] };
+					int currentTile{ CurrentVechicle->GetGoalTileIndex() };
+					CurrentVechicle->SetGoalTileIndex(nextTileIndex);
+					CurrentVechicle->SetTileIndex(currentTile);
+					for (vechicle* vech : m_vechicleInCell[lastTile]) {
+						if (vech == CurrentVechicle) {
+							vech = m_vechicleInCell[lastTile][m_vechicleInCell[lastTile].size() - 1];
+							m_vechicleInCell[lastTile].pop_back();
+						}
+					}
+					m_vechicleInCell[currentTile].push_back(CurrentVechicle);
 					//update goal pos
-					if (vechicle->GetCounterPath() + 1 < (int)m_paths[index].size() - 1) {
-						int secondNextTileIndex{ m_paths[index][vechicle->GetCounterPath() + 1] };
-						GoalUpdate(vechicle,currentTile,nextTileIndex,secondNextTileIndex);
+					if (CurrentVechicle->GetCounterPath() + 1 < (int)m_paths[index].size() - 1) {
+						int secondNextTileIndex{ m_paths[index][CurrentVechicle->GetCounterPath() + 1] };
+						GoalUpdate(CurrentVechicle,currentTile,nextTileIndex,secondNextTileIndex);
 						
 					}
 					else {
 						int secondNextTileIndex{ MAXINT };
-						GoalUpdate(vechicle, currentTile,nextTileIndex, secondNextTileIndex);
+						GoalUpdate(CurrentVechicle, currentTile,nextTileIndex, secondNextTileIndex);
 					}
-					//
-					m_goalPos = vechicle->GetGoalPosition();
+					m_goalPos = CurrentVechicle->GetGoalPosition();
 					Point2f direction{ SeekDirection(position,m_goalPos) };
-					vechicle->SetDirection(direction);
+					//give priorety to people right of current vechcile
+					//if()
+					CurrentVechicle->SetDirection(direction);
 				}
 				else {
 					//delete vechcile he got to the goal
 					deleteVechicle = true;
+					//delete out of m_vechicleInCell
+					for (vechicle* vech : m_vechicleInCell[lastTile]) {
+						if (vech == CurrentVechicle) {
+							vech = m_vechicleInCell[lastTile][m_vechicleInCell[lastTile].size() - 1];
+							m_vechicleInCell[lastTile].pop_back();
+						}
+					}
 				}
 			}
 		}
@@ -71,14 +91,13 @@ void VechicleManager::Update(float elapsedSec) {
 		if (deleteVechicle)DeleteVechicle(index);
 		else {
 			Point2f direction{ SeekDirection(position,m_goalPos) };
-			vechicle->SetDirection(direction);
+			CurrentVechicle->SetDirection(direction);
 		}
 	}
 }
 void VechicleManager::GoalUpdate(vechicle* vechicle,int& currentTileIndex, int& nextTileIndex, int& SecondnextTileIndex) {
 	if (nextTileIndex != MAXINT)m_goalPos = FindGoalPos( currentTileIndex,nextTileIndex,SecondnextTileIndex );
 	else m_goalPos = vechicle->GetGoalPosition();//might need to change
-	goalPoses.push_back(m_goalPos);
 	vechicle->SetGoalPosition(m_goalPos);
 }
 Point2f  VechicleManager::FindGoalPos(int& currentTileIndex, int& nextTileIndex, int& SecondnextTileIndex) {
@@ -143,10 +162,7 @@ void VechicleManager::Draw() const {
 	for (vechicle* vechicle : m_pVechicles) {
 		vechicle->Draw();
 	}
-	for (Point2f pos : goalPoses) {
-		utils::SetColor(1, 0, 1);
-		utils::DrawEllipse(pos, 5, 5, 2);
-	}
+
 }
 
 size_t VechicleManager::Size() const {
@@ -154,15 +170,27 @@ size_t VechicleManager::Size() const {
 }
 void VechicleManager::DeleteVechicle(int id)
 {
+	int currentTile{ m_pVechicles[id]->GetTileIndex() };
+	vechicle* vechcicleToDelete = m_pVechicles[id];
+	//delete out of the cell
+	for (vechicle* vech : m_vechicleInCell[currentTile]) {
+		if (vech == vechcicleToDelete) {
+			vech = m_vechicleInCell[currentTile][m_vechicleInCell[currentTile].size() - 1];
+			m_vechicleInCell[currentTile].pop_back();
+		}
+	}
+
 	vechicle* backup{ m_pVechicles[m_pVechicles.size() - 1] };
 	delete m_pVechicles[id];
 	
 	m_pVechicles[id] = backup;
 	m_pVechicles.pop_back();
 
-	//wel also need to delete the path 
+	//we also need to delete the path 
 	m_paths.at(id) = m_paths[m_paths.size() - 1];
 	m_paths.pop_back();
+
+
 }
 
 int VechicleManager::GetLastid()
@@ -170,7 +198,9 @@ int VechicleManager::GetLastid()
 	return int(m_pVechicles.size() - 1);
 }
 
-void VechicleManager::AddVehicle(Point2f& pos, std::vector<int> path) {
+void VechicleManager::AddVehicle(int& cellIndex, std::vector<int> path, Point2f& spawnDirection) {
+	//calculate spawn pos
+	Point2f pos{m_gridPositions[cellIndex].x+25,m_gridPositions[cellIndex].y + 25 };
 	//ad car and path to memory
 	m_pVechicles.push_back(new vechicle(pos, m_pTexture));
 	vechicle* vechicleToAdd{ m_pVechicles[m_pVechicles.size() - 1] };
@@ -181,11 +211,12 @@ void VechicleManager::AddVehicle(Point2f& pos, std::vector<int> path) {
 	vechicleToAdd->SetCounterPath(0);
 	vechicleToAdd->SetGoalTileIndex(path[0]);//first tile of path
 	vechicleToAdd->SetGoalPosition(m_gridPositions[vechicleToAdd->GetGoalTileIndex()]);
-	Point2f position{ vechicleToAdd->GetPosition() };
-	Point2f goalPosition{ vechicleToAdd->GetGoalPosition() };
-	Point2f direction{ SeekDirection(position,goalPosition) };
-	vechicleToAdd->SetDirection(direction);
+	vechicleToAdd->SetDirection(spawnDirection);
+	//add to right cell
+	m_vechicleInCell[cellIndex].push_back(vechicleToAdd);
+	vechicleToAdd->SetTileIndex(cellIndex);
 }
+
 Point2f VechicleManager::SeekDirection(Point2f& pos, Point2f& goalPos) {
 	Point2f steering{ goalPos.x - pos.x ,goalPos.y - pos.y };
 	if(steering.x == 0 && steering.y ==0)return steering;
@@ -224,6 +255,7 @@ int VechicleManager::CheckConnections(int& currentTileIndex, int& nextTileIndex,
 	return upcomingPathID;
 }
 int VechicleManager::checkConnection(int& currentTileIndex, int& nextTileIndex) {
+	//up check
 	if (currentTileIndex - 10 >= 0) {
 		if (currentTileIndex - 10 == nextTileIndex)return 1;
 	}

@@ -19,7 +19,7 @@ public:
 	void DeleteAllVechicle();
 	size_t Size( ) const;
 	int GetLastid();
-	void AddVehicle(Point2f& pos,std::vector<int> path);
+	void AddVehicle(int& cellIndex,std::vector<int> path,Point2f& spawnDirection);
 	Point2f SeekDirection(Point2f& pos, Point2f& goalPos);
 	Point2f NormalizeVector(Point2f& vector);
 	void SetGoalPos(Point2f goalPos);
@@ -36,5 +36,5 @@ private:
 	Point2f m_goalPos{};
 	std::vector<Point2f> m_gridPositions;
 	int m_gridSize;
-	std::vector<Point2f>goalPoses{};
+	std::vector<std::vector<vechicle*>>m_vechicleInCell;
 };

@@ -56,26 +56,62 @@ void Draw()
 	// Put your own draw statements here
 	DrawGrid();
 	g_pVechicleManager->Draw();
+	if (g_Simulating)SetColor(0, 1, 0);
+	else SetColor(1, 0, 0);
+	FillRect(Rectf{ 0,0,50,50 });
 }
 
 void Update(float elapsedSec)
 {
+	if (g_Simulating) {
+		g_pVechicleManager->Update(elapsedSec);
+	}
 
-	g_pVechicleManager->Update(elapsedSec);
-	// process input, do physics 
-
-	// e.g. Check keyboard state
-	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	//if ( pStates[SDL_SCANCODE_RIGHT] )
-	//{
-	//	std::cout << "Right arrow key is down\n";
-	//}
-	//if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-	//{
-	//	std::cout << "Left and up arrow keys are down\n";
-	//}
 }
+void SpawnVechicles() {
+	for (int i{ 0 }; i < g_AmountOfCars; i++) {
+		int houseIndex{ 0 };
+		int FactoryIndex{ 0 };
+		int wichHouse{ rand() % g_AmountOfHouses };
+		int wichFactory{ rand() % g_AmountOfFactories };
+		int counter{ 0 };
+		for (int indexHouse{ 0 }; indexHouse < g_GridCells - 1; indexHouse++) {
+			if (counter == wichHouse)houseIndex = indexHouse;
+			if (g_Houses[indexHouse] == 1)counter++;
+		}
+		counter = 0;
+		for (int indexFactory{ 0 }; indexFactory < g_GridCells - 1; indexFactory++) {
+			if (counter == wichFactory)FactoryIndex = indexFactory;
+			if (g_Factories[indexFactory] == 1)counter++;
+		}
+		Point2f direction{ FindSpawnDirection(houseIndex) };
+		int connections{ CheckConnections(houseIndex) };
+		//get index of first road
+		int road1{};
+		if (connections >= 2 && connections < 4)road1 =houseIndex - 1;
+		else if (connections >= 4 && connections < 8)road1 = houseIndex + 10;
+		else if (connections >= 8)road1 = houseIndex - 10;
+		else road1 = houseIndex + 1;
+		//get index of last road
+		int road2{};
+		connections = CheckConnections(FactoryIndex);
+		if (connections >= 2 && connections < 4)road2 = FactoryIndex - 1;
+		else if (connections >= 4 && connections < 8)road2 = FactoryIndex + 10;
+		else if (connections >= 8)road2 = FactoryIndex - 10;
+		else road2 = FactoryIndex + 1;
 
+		g_path = FindPath(road1, road2);
+		g_pVechicleManager->AddVehicle(houseIndex,g_path, direction);
+	}
+	g_NotSpawned = false;
+}
+Point2f FindSpawnDirection(int& houseIndex) {
+	int selection{ CheckConnections(houseIndex) };
+	if (selection >= 2 && selection < 4)return { Point2f{-1,0} };
+	else if (selection >= 4 && selection < 8)	return { Point2f{0,-1} };
+	else if (selection >= 8)return { Point2f{0,1} };
+	return { Point2f{1,0} };
+}
 void End()
 {
 	// free game resources here
@@ -122,13 +158,14 @@ void OnKeyDownEvent(SDL_Keycode key)
 
 void OnKeyUpEvent(SDL_Keycode key)
 {
-	Point2f pos{ g_cellPosition[0].x,g_cellPosition[0].y+100 };
+	int indexcell{ 0 };
+	Point2f direction{ 1,0 };
 	switch (key)
 	{
 	case SDLK_LEFT:
 		//std::cout << "Left arrow key released\n";
-		
-		g_pVechicleManager->AddVehicle(pos, FindPath(0, 99));
+		//test for vechicle spawning/pathfinding
+		//g_pVechicleManager->AddVehicle(indexcell, FindPath(0, 99), direction);
 		break;
 	case SDLK_RIGHT:
 		//std::cout << "Right arrow key released\n";
@@ -136,6 +173,16 @@ void OnKeyUpEvent(SDL_Keycode key)
 	case SDLK_1:
 	case SDLK_KP_1:
 		//std::cout << "Key 1 released\n";
+		break;
+	case SDLK_SPACE:
+		if (g_Simulating) {
+			g_Simulating = false;
+			g_pVechicleManager->DeleteAllVechicle();
+		}
+		else {
+			g_Simulating = true;
+			SpawnVechicles();
+		}
 		break;
 	}
 }
@@ -162,10 +209,18 @@ void OnMouseUpEvent(const SDL_MouseButtonEvent& e)
 	{
 		case SDL_BUTTON_LEFT:
 		{
-		Tilecliked();
+
+		if(!g_Simulating)Tilecliked();
 		//std::cout << "Left mouse button released\n";
 		//Point2f mousePos{ float( e.x ), float( g_WindowHeight - e.y ) };
 		break;
+		}
+		case SDL_BUTTON_RIGHT:
+		{
+			if (!g_Simulating)TileRightcliked();
+			//std::cout << "Left mouse button released\n";
+			//Point2f mousePos{ float( e.x ), float( g_WindowHeight - e.y ) };
+			break;
 		}
 	}
 }
@@ -177,9 +232,46 @@ void Tilecliked() {
 				index = counter;
 				std::cout << index << "\n";
 				if (g_CellState[index] == 0)g_CellState[index] += 1;//road tile
-				else if (g_CellState[index] == 1)g_CellState[index] += 1;//house tile
-				else if (g_CellState[index] == 2)g_CellState[index] += 1;//factory tile
-				else g_CellState[index] = 0;//grass tile
+				else if (g_CellState[index] == 1){
+					g_CellState[index] += 1;//house tile
+					g_Houses[index] = 1;
+					g_AmountOfHouses += 1;
+				}
+				else if (g_CellState[index] == 2) {
+					g_CellState[index] += 1;//factory tile
+					g_Houses[index] = 0;
+					g_AmountOfHouses -= 1;
+					g_Factories[index] = 1;
+					g_AmountOfFactories += 1;
+				}
+				else {
+					g_CellState[index] = 0;//grass tile
+					g_Factories[index] = 0;
+					g_AmountOfFactories -= 1;
+				}
+			}
+		}
+	}
+
+}
+void TileRightcliked() {
+	int index{};
+	for (int counter{ 0 }; counter < g_GridCells; counter++) {
+		if ((g_mousePos.x < (g_cellPosition[counter].x + g_GridSizeX)) && (g_mousePos.x > g_cellPosition[counter].x)) {
+			if ((g_mousePos.y < (g_cellPosition[counter].y + g_GridSizeY)) && (g_mousePos.y > g_cellPosition[counter].y)) {
+				index = counter;
+				std::cout << index << "\n";
+				if (g_CellState[index] == 1) {
+					g_Houses[index] = 0;
+					g_AmountOfHouses -= 1;
+				}
+				if (g_CellState[index] == 2) {
+					g_Factories[index] = 0;
+					g_AmountOfFactories -= 1;
+				}
+				g_CellState[index] = 0;
+
+			
 			}
 		}
 	}
@@ -232,13 +324,12 @@ void DrawGrid() {
 		}
 	}
 	irow = 0;
-	//pathfinding test
-	g_path = FindPath(0, 99);
-	for (int index : g_path)
-	{
-		SetColor(1, 1, 0,0.5f);
-		FillRect(g_cellPosition[index].x, g_cellPosition[index].y, g_GridSizeX, g_GridSizeY);
-	}
+	////pathfinding test
+	//for (int index : g_path)
+	//{
+	//	SetColor(1, 1, 0,0.5f);
+	//	FillRect(g_cellPosition[index].x, g_cellPosition[index].y, g_GridSizeX, g_GridSizeY);
+	//}
 }
 Texture TileSelector(int& tileIndex) {
 
@@ -418,6 +509,7 @@ std::vector<int>  FindPath(int StartIndex, int EndIndex){
 
 		if (currentIndex == EndIndex)//stop searching we found end
 		{
+			//closedList[currentIndex] = closedList[currentIndex-1]
 			break;
 		}
 		for (int index : GetNeighbours(currentIndex))
