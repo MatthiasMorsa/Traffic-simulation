@@ -56,10 +56,12 @@ void vechicle::Draw() {
 	//glScalef(1, 1, 1);//invers vechicle sprite
 	glRotatef(-m_angle, 0, 0, 1);//rotate projectile 
 	glTranslated(-(m_pTexture.width/4),-m_pTexture.height/2, 0);//translate to middle vechicle
+	Point2f posInfrontOfCar{ m_Position.x + (m_direction.x * 15),m_Position.y + (m_direction.y * 15) };
 
 	utils::DrawTexture(m_pTexture, DstRect, m_SrcRect);//draw on vechicle pos
 	glPopMatrix();//return to world pos
-
+	//test code
+	//utils::FillEllipse(posInfrontOfCar, 10, 10);
 }
 void vechicle::SetDirection(Point2f& direction) {
 	m_direction = direction;
@@ -100,7 +102,14 @@ Point2f vechicle::GetGoalPosition() {
 	return m_goalPosistion;
 }
 void vechicle::SetTileIndex(int tileIndex) {
+	m_lastTileIndex = m_tileIndex;//save last tile 
 	m_tileIndex = tileIndex;
+}
+Point2f vechicle::GetDirection() {
+	return m_direction;
+}
+int vechicle::GetLastTileIndex() {
+	return m_lastTileIndex;
 }
 
 

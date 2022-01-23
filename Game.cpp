@@ -65,45 +65,51 @@ void Update(float elapsedSec)
 {
 	if (g_Simulating) {
 		g_pVechicleManager->Update(elapsedSec);
+		SpawnVechicles(elapsedSec);
 	}
-
+	g_AmountOfCars = g_pVechicleManager->getAmountOfVechicle();
 }
-void SpawnVechicles() {
-	for (int i{ 0 }; i < g_AmountOfCars; i++) {
-		int houseIndex{ 0 };
-		int FactoryIndex{ 0 };
-		int wichHouse{ rand() % g_AmountOfHouses };
-		int wichFactory{ rand() % g_AmountOfFactories };
-		int counter{ 0 };
-		for (int indexHouse{ 0 }; indexHouse < g_GridCells - 1; indexHouse++) {
-			if (counter == wichHouse)houseIndex = indexHouse;
-			if (g_Houses[indexHouse] == 1)counter++;
-		}
-		counter = 0;
-		for (int indexFactory{ 0 }; indexFactory < g_GridCells - 1; indexFactory++) {
-			if (counter == wichFactory)FactoryIndex = indexFactory;
-			if (g_Factories[indexFactory] == 1)counter++;
-		}
-		Point2f direction{ FindSpawnDirection(houseIndex) };
-		int connections{ CheckConnections(houseIndex) };
-		//get index of first road
-		int road1{};
-		if (connections >= 2 && connections < 4)road1 =houseIndex - 1;
-		else if (connections >= 4 && connections < 8)road1 = houseIndex + 10;
-		else if (connections >= 8)road1 = houseIndex - 10;
-		else road1 = houseIndex + 1;
-		//get index of last road
-		int road2{};
-		connections = CheckConnections(FactoryIndex);
-		if (connections >= 2 && connections < 4)road2 = FactoryIndex - 1;
-		else if (connections >= 4 && connections < 8)road2 = FactoryIndex + 10;
-		else if (connections >= 8)road2 = FactoryIndex - 10;
-		else road2 = FactoryIndex + 1;
+void SpawnVechicles(float elapsedSec) {
+	if(g_AmountOfCars<g_MaxAmountOfCars){
+		if (g_elapsedSecCarSpawn > g_delaySpawnCar) {
+			g_delaySpawnCar = ((rand() % 100) / 100.0f) +0.5f;
+			g_elapsedSecCarSpawn = 0;
+			int houseIndex{ 0 };
+			int FactoryIndex{ 0 };
+			int wichHouse{ rand() % g_AmountOfHouses };
+			int wichFactory{ rand() % g_AmountOfFactories };
+			int counter{ 0 };
+			for (int indexHouse{ 0 }; indexHouse < g_GridCells - 1; indexHouse++) {
+				if (counter == wichHouse)houseIndex = indexHouse;
+				if (g_Houses[indexHouse] == 1)counter++;
+			}
+			counter = 0;
+			for (int indexFactory{ 0 }; indexFactory < g_GridCells - 1; indexFactory++) {
+				if (counter == wichFactory)FactoryIndex = indexFactory;
+				if (g_Factories[indexFactory] == 1)counter++;
+			}
+			Point2f direction{ FindSpawnDirection(houseIndex) };
+			int connections{ CheckConnections(houseIndex) };
+			//get index of first road
+			int road1{};
+			if (connections >= 2 && connections < 4)road1 = houseIndex - 1;
+			else if (connections >= 4 && connections < 8)road1 = houseIndex + 10;
+			else if (connections >= 8)road1 = houseIndex - 10;
+			else road1 = houseIndex + 1;
+			//get index of last road
+			int road2{};
+			connections = CheckConnections(FactoryIndex);
+			if (connections >= 2 && connections < 4)road2 = FactoryIndex - 1;
+			else if (connections >= 4 && connections < 8)road2 = FactoryIndex + 10;
+			else if (connections >= 8)road2 = FactoryIndex - 10;
+			else road2 = FactoryIndex + 1;
 
-		g_path = FindPath(road1, road2);
-		g_pVechicleManager->AddVehicle(houseIndex,g_path, direction);
+			g_path = FindPath(road1, road2);
+			g_pVechicleManager->AddVehicle(houseIndex, g_path, direction);
+		}
+		
 	}
-	g_NotSpawned = false;
+		g_elapsedSecCarSpawn += elapsedSec;
 }
 Point2f FindSpawnDirection(int& houseIndex) {
 	int selection{ CheckConnections(houseIndex) };
@@ -181,7 +187,6 @@ void OnKeyUpEvent(SDL_Keycode key)
 		}
 		else {
 			g_Simulating = true;
-			SpawnVechicles();
 		}
 		break;
 	}

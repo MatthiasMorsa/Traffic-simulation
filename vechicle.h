@@ -27,6 +27,7 @@ public:
 	void SetSpeed(float& speed);
 	int GetTileIndex();
 	void SetTileIndex(int tileIndex);
+	int GetLastTileIndex();
 	Point2f GetPosition();
 	void SetGoalPosition(Point2f goalPos);
 	Point2f GetGoalPosition();
@@ -34,12 +35,14 @@ public:
 	int GetCounterPath();
 	int GetGoalTileIndex();
 	void SetCounterPath(int counter);
+	Point2f GetDirection();
 	
 private:
 	// Private member functions								
 	void CalculateAngle();
 	// Datamembers								
 	int m_tileIndex{};
+	int m_lastTileIndex{};
 	int m_GoalTileIndex{};
 	float m_speed{};
 	Point2f m_direction{};

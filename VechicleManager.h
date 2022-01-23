@@ -28,6 +28,12 @@ public:
 	int CheckConnections(int& currentTileIndex, int& nextTileIndex, int& SecondnextTileIndex);
 	int checkConnection(int& currentTileIndex, int& nextTileIndex);
 	Point2f FindGoalPos(int& currentTileIndex, int& nextTileIndex, int& SecondnextTileIndex);
+	int PosToCellIndex(Point2f& pos);
+	int getAmountOfVechicle();
+	std::vector<vechicle*> GetCarsInRightcell(vechicle* vechicle);
+	std::vector<vechicle*> GetCarsInfront(vechicle* vechicle);
+	Point2f GetStop(std::vector<vechicle*>& cars, vechicle* vechicle);
+	float dotProduct(Point2f& v1, Point2f& v2);
 private:
 	std::vector<vechicle*> m_pVechicles;
 	utils::Texture m_pTexture;

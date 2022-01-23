@@ -36,7 +36,10 @@ Texture g_pGrass,g_pRoadPoint,g_pRoadUtoL, g_pRoadUtoR, g_pRoadDtoL, g_pRoadDtoR
 		g_pCarTexture;
 bool g_Simulating{ false };
 bool g_NotSpawned{ true };
-int g_AmountOfCars{ 5 };
+int g_AmountOfCars{ 0 };
+int g_MaxAmountOfCars{ 10 };
+float g_elapsedSecCarSpawn{0};
+float g_delaySpawnCar{0};
 // Declare your own functions here
 void GetTextures();
 void releaseTextures();
@@ -52,7 +55,7 @@ int CheckConnections(int& tileIndex);
 std::vector<int> GetNeighbours(int& tileIndex);
 std::vector<int> FindPath(int StartIndex, int EndIndex);
 Point2f FindSpawnDirection(int& houseIndex);
-void SpawnVechicles();
+void SpawnVechicles(float elapsedSec);
 #pragma endregion ownDeclarations
 
 #pragma region gameFunctions											
