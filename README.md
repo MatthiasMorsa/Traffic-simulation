@@ -10,7 +10,8 @@ As of 8/01/2022 i am still coding the simulator, the following list gives you an
 - create road textures ✓
 - create world grid ✓
 - create car texture ✓
-- create car(functionalety) ✖
+- create car(functionalety) ✓
+- create traffic rules(priorety for righthand cars,...)✖
 - create home/factory textures(also placeable) ✓
 - create traffic lights ✖
 
@@ -19,4 +20,6 @@ As of 8/01/2022 i am still coding the simulator, the following list gives you an
 **first you create a road network** <br />
 ![image of road network](https://github.com/MatthiasMorsa/Traffic-simulation/blob/master/readmePNG/RoadNetwork.PNG?raw=true)<br />
 **then you add houses/factories** <br />
-![image of road network](https://github.com/MatthiasMorsa/Traffic-simulation/blob/master/readmePNG/HousesAndFactories.PNG?raw=true)
+![image of road network](https://github.com/MatthiasMorsa/Traffic-simulation/blob/master/readmePNG/HousesAndFactories.PNG?raw=true)<br />
+**Whenever you want press space to start simulating** <br />
+⚠if there is a house/factory not connected to a road it will freeze(il fix this after i create the traffic rules)
