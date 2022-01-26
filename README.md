@@ -1,5 +1,8 @@
 # 🚦 Traffic-simulation 🚦
-this is a simple traffic simulation where you can build your own city design and see where traffic will become an issue. 
+this is a simple traffic simulation where you can build your own city design and see where traffic will become an issue. <br />
+With this project i wanted to learn how to create autonomous cars based on a behavior tree.<br />
+but also keep a flexible world enviroment that i can change to see how these cars would interact in different worlds.<br />
+
 <br />
 **⚠still in development⚠**
 <br />
