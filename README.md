@@ -4,9 +4,9 @@ With this project i wanted to learn how to create autonomous cars based on a beh
 but also keep a flexible world enviroment that i can change to see how these cars would interact in different worlds.<br />
 
 <br />
-**⚠still in development⚠**
+**⚠halted in development⚠**
 <br />
-As of 8/01/2022 i am still coding the simulator, the following list gives you an idea of what i have done so far.
+As of 8/01/2022 i am have halted coding the simulator, the following list gives you an idea of what i have done so far.
 
 
  ## **✓  done & to do  ✓**
